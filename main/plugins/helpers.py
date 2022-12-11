@@ -12,16 +12,16 @@ from datetime import datetime as dt
 async def join(client, invite_link):
     try:
         await client.join_chat(invite_link)
-        return "Successfully joined the Channel"
+        return "Kanala başarıyla katıldı"
     except UserAlreadyParticipant:
-        return "User is already a participant."
+        return "Kullanıcı zaten bir katılımcı."
     except (InviteHashInvalid, InviteHashExpired):
-        return "Could not join. Maybe your link is expired or Invalid."
+        return "Katılamadı. Bağlantınızın süresi dolmuş veya Geçersiz olabilir."
     except FloodWait:
-        return "Too many requests, try again later."
+        return "Çok fazla istek var, daha sonra tekrar deneyin."
     except Exception as e:
         print(e)
-        return "Could not join, try joining manually."
+        return "Katılamadı, manuel olarak katılmayı deneyin."
     
 #Regex---------------------------------------------------------------------------------------------------------------
 #to get the url from event
