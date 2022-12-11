@@ -2,7 +2,7 @@
 #Github.com/Vasusen-code
 
 """
-Plugin for both public & private channels!
+Hem genel hem de özel kanallar için eklenti!
 """
 
 import time, os, asyncio
@@ -22,7 +22,7 @@ from pyrogram.errors import FloodWait
 from ethon.pyfunc import video_metadata
 from ethon.telefunc import force_sub
 
-ft = f"To use this bot you've to join @{fs}."
+ft = f"Bu botu kullanmak için katılmanız gerekiyor @{fs}."
 
 batch = []
 
@@ -30,7 +30,7 @@ async def get_pvt_content(event, chat, id):
     msg = await userbot.get_messages(chat, ids=id)
     await event.client.send_message(event.chat_id, msg) 
     
-@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/batch'))
+@Drone.on(events.NewMessage(incoming=True, from_users=AUTH, pattern='/dl'))
 async def _batch(event):
     if not event.is_private:
         return
@@ -41,31 +41,31 @@ async def _batch(event):
         await event.reply(r)
         return       
     if f'{event.sender_id}' in batch:
-        return await event.reply("You've already started one batch, wait for it to complete you dumbfuck owner!")
+        return await event.reply("Zaten bir partiye başladın, onun tamamlamasını bekle")
     async with Drone.conversation(event.chat_id) as conv: 
         if s != True:
-            await conv.send_message("Send me the message link you want to start saving from, as a reply to this message.", buttons=Button.force_reply())
+            await conv.send_message("Bu mesaja yanıt olarak, kaydetmeye başlamak istediğiniz mesaj bağlantısını bana gönderin.", buttons=Button.force_reply())
             try:
                 link = await conv.get_reply()
                 try:
                     _link = get_link(link.text)
                 except Exception:
-                    await conv.send_message("No link found.")
+                    await conv.send_message("Bağlantı bulunamadı.")
             except Exception as e:
                 print(e)
-                return await conv.send_message("Cannot wait more longer for your response!")
-            await conv.send_message("Send me the number of files/range you want to save from the given message, as a reply to this message.", buttons=Button.force_reply())
+                return await conv.send_message("Yanıtınız için daha fazla bekleyemezsiniz!")
+            await conv.send_message("Bu mesaja cevap olarak bana verilen mesajdan kaydetmek istediğiniz dosya sayısını/aralığı gönderin.", buttons=Button.force_reply())
             try:
                 _range = await conv.get_reply()
             except Exception as e:
                 print(e)
-                return await conv.send_message("Cannot wait more longer for your response!")
+                return await conv.send_message("Yanıtınız için daha fazla bekleyemezsiniz!")
             try:
                 value = int(_range.text)
                 if value > 100:
-                    return await conv.send_message("You can only get upto 100 files in a single batch.")
+                    return await conv.send_message("Tek bir toplu işte en fazla 100 dosya alabilirsiniz")
             except ValueError:
-                return await conv.send_message("Range must be an integer!")
+                return await conv.send_message("Aralık bir tamsayı olmalıdır!")
             s, r = await check(userbot, Bot, _link)
             if s != True:
                 await conv.send_message(r)
@@ -93,11 +93,11 @@ async def run_batch(userbot, client, sender, link, _range):
         try:
             await get_bulk_msg(userbot, client, sender, link, i) 
         except FloodWait as fw:
-            fw_alert = await client.send_message(sender, f"Sleeping for f'{fw.x} seconds due to floodwait.")
+            fw_alert = await client.send_message(sender, f"Floodwait nedeniyle f'{fw.x} saniye uyuyor.")
             await asyncio.sleep(fw.x + 5)
             await fw_alert.delete()
             await get_bulk_msg(userbot, client, sender, link, i)
-        protection = await client.send_message(sender, f"Sleeping for `{timer}` seconds to avoid Floodwaits and Protect account!")
+        protection = await client.send_message(sender, f"Floodwaits ve Protect hesabından kaçınmak için `{timer}` saniye uykuda!")
         time.sleep(timer)
         await protection.delete()
             
