@@ -25,16 +25,16 @@ async def check(userbot, client, link):
             await userbot.get_messages(chat, msg_id)
             return True, None
         except ValueError:
-            return False, "**Invalid Link!**"
+            return False, "**Geçersiz link!**"
         except Exception:
-            return False, "Have you joined the channel?"
+            return False, "Kanala katıldınız mı?"
     else:
         try:
             chat = str(link.split("/")[-2])
             await client.get_messages(chat, msg_id)
             return True, None
         except Exception:
-            return False, "Maybe bot is banned from the chat, or your link is invalid!"
+            return False, "Belki bot sohbetten yasaklanmıştır veya bağlantınız geçersizdir!"
             
 async def get_msg(userbot, client, sender, edit_id, msg_link, i):
     edit = ""
@@ -53,22 +53,22 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
                     return
             if not msg.media:
                 if msg.text:
-                    edit = await client.edit_message_text(sender, edit_id, "Cloning.")
+                    edit = await client.edit_message_text(sender, edit_id, "Klonlanıyor.")
                     await client.send_message(sender, msg.text.markdown)
                     await edit.delete()
                     return
-            edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
+            edit = await client.edit_message_text(sender, edit_id, "İndirmeye Çalışılıyor.")
             file = await userbot.download_media(
                 msg,
                 progress=progress_for_pyrogram,
                 progress_args=(
                     client,
-                    "**DOWNLOADING:**\n",
+                    "**INDIRILIYOR:**\n",
                     edit,
                     time.time()
                 )
             )
-            await edit.edit('Preparing to Upload!')
+            await edit.edit('Tg Yukleniyor!')
             caption = str(file)
             if msg.caption is not None:
                 caption = msg.caption
@@ -90,14 +90,14 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        '**UPLOADING:**\n',
+                        '**YUKLENIYOR:**\n',
                         edit,
                         time.time()
                     )
                 )
                 os.remove(file)
             elif str(file).split(".")[-1] in ['jpg', 'jpeg', 'png', 'webp']:
-                await edit.edit("Uploading photo.")
+                await edit.edit("fotoğraf yükleniyor.")
                 await bot.send_file(sender, file, caption=caption)
                 os.remove(file)
             else:
@@ -110,7 +110,7 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
                     progress=progress_for_pyrogram,
                     progress_args=(
                         client,
-                        '**UPLOADING:**\n',
+                        '**YUKLENIYOR:**\n',
                         edit,
                         time.time()
                     )
@@ -118,26 +118,26 @@ async def get_msg(userbot, client, sender, edit_id, msg_link, i):
                 os.remove(file)
             await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
-            await client.edit_message_text(sender, edit_id, "Have you joined the channel?")
+            await client.edit_message_text(sender, edit_id, "Kanala katıldınız mı?")
             return 
         except Exception as e:
             print(e)
-            await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
+            await client.edit_message_text(sender, edit_id, f'kaydedilemedi: `{msg_link}`')
             os.remove(file)
             return 
     else:
-        edit = await client.edit_message_text(sender, edit_id, "Cloning.")
+        edit = await client.edit_message_text(sender, edit_id, "Klonlaniyor.")
         chat =  msg_link.split("/")[-2]
         try:
             await client.copy_message(int(sender), chat, msg_id)
         except FloodWait as fw:
-            await client.edit_message_text(sender, edit_id, f'Please try after {fw.x} seconds, due to floodwaits caused by too many requests.')
+            await client.edit_message_text(sender, edit_id, f'Çok fazla isteğin neden olduğu flood nedeniyle lütfen {fw.x} saniye sonra deneyin.')
             return print(fw)
         except Exception as e:
             print(e)
-            return await client.edit_message_text(sender, edit_id, f'Failed to save: `{msg_link}`')
+            return await client.edit_message_text(sender, edit_id, f'kaydedilemedi: `{msg_link}`')
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, msg_link, i):
-    x = await client.send_message(sender, "Processing!")
+    x = await client.send_message(sender, "Isleniyor!")
     await get_msg(userbot, client, sender, x.message_id, msg_link, i) 
