@@ -12,9 +12,9 @@ from telethon import events
 
 from ethon.telefunc import force_sub
 
-ft = f"To use this bot you've to join @{fs}."
+ft = f"Bu botu kullanmak için katılmanız gerekiyor @{fs}."
 
-message = "Send me the message link you want to start saving from, as a reply to this message."
+message = "Bu mesaja yanıt olarak, kaydetmeye başlamak istediğiniz mesaj bağlantısını bana gönderin."
           
 # To-Do:
 # Make these codes shorter and clean
